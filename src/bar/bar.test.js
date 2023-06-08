@@ -311,9 +311,9 @@ test("Pressing the clear button will remove all user-supplied data", async funct
 
 	await user.click(colorSelector)
 
-	colorSelector.value = "#ff4599"
+	//Src: https://github.com/testing-library/user-event/issues/423#issuecomment-669368863
 
-	fireEvent.change(colorSelector);
+	fireEvent.input(colorSelector, {target: {value: "#ff4599"}});
 
 	//Making sure the value of color has changed
 	expect(colorSelector.value).not.toBe(defaultColor)
@@ -409,9 +409,8 @@ test("Pressing the clear button will remove all user-supplied data, even if the 
 
 	await user.click(colorSelector)
 
-	colorSelector.value = "#ff4599"
+	fireEvent.input(colorSelector, {target: {value: "#ff4599"}});
 
-	await fireEvent.change(colorSelector);
 
 	//Making sure the value of color has changed
 	expect(colorSelector.value).not.toBe(defaultColor)
@@ -532,12 +531,7 @@ test("Data is being correctly sent to generateImage", async function() {
 
 	await user.click(colorSelector)
 
-	colorSelector.value = "#ff9909"
-
-	await fireEvent.change(colorSelector);
-
-
-
+	fireEvent.input(colorSelector, {target: {value: "#ff9909"}});
 
 	await user.click(generateButton)
 
