@@ -12,10 +12,10 @@ const {
     loadCurrentChartData,
     } = require('../chartStorage.js');
   
-    describe('Chart Storage', () => {
-        beforeEach(() => {
-        window.localStorage.clear();
-        });
+describe('Chart Storage', () => {
+    beforeEach(() => {
+    window.localStorage.clear();
+    });
     
     describe('saveChart', () => {
         test('should save a new chart to localStorage', () => {
