@@ -543,8 +543,6 @@ test("Data is being correctly sent to generateImage", async function() {
 
 
 
-
-
 	expect(generateChartImg).toHaveBeenCalledWith("bar", [{"x": `${xInput[0].value}`, "y": `${yInput[0].value}`}],
 		xLabel.value, yLabel.value, chartTitle.value, colorSelector.value)
 
