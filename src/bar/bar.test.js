@@ -17,15 +17,29 @@ let currentChartData;
 
 
 //Src : https://github.com/jestjs/jest/issues/1224
-beforeEach(() => {
+
+//This gets rid of all data from run to run on the tests
+
+
+beforeEach( () => {
 	const rootElm = document.documentElement;
+
+
 
 // Remove attributes on root element
 	[...rootElm.attributes].forEach(attr => rootElm.removeAttribute(attr.name));
 
+ // Remove all attributes
+
+
 	jest.restoreAllMocks()
 	jest.clearAllMocks()
 });
+
+
+
+
+
 
 
 require("whatwg-fetch")
@@ -200,8 +214,6 @@ test("Trying to generate a chart without supplying any data, but supplying label
 
 
 	expect(spyOn).toHaveBeenCalledWith("Error: No data specified!");
-	// spyOn.mockRestore();
-	// jest.restoreAllMocks()
 
 	const clearBtn = domTesting.getByRole(document, "button", {name: "Clear chart data"})
 
@@ -234,12 +246,6 @@ let yInput = await domTesting.findByLabelText(document, "Y")
 
 
 
-	let xLabel = await domTesting.getByRole(document, "textbox", { name: "X label" });
-	let yLabel = await domTesting.getByRole(document, "textbox", { name: "Y label" });
-
-	// xLabel.value = ""
-	// yLabel.value = ""
-
 
 	const generateButton = domTesting.getByRole(document, "button", {name: "Generate chart"})
 	await user.type(yInput, "8")
@@ -252,23 +258,265 @@ let yInput = await domTesting.findByLabelText(document, "Y")
 	await user.click(generateButton)
 
 
-
-
-	// await user.type(xLabel, "hey")
-	// await user.type(yLabel, "you")
-
-
-
-
-
-	// //
-
-
 	expect(spyOn).toHaveBeenCalledWith("Error: Must specify a label for both X and Y!")
+
+
+})
+
+test("Trying to generate a chart by supplying x data only, and supplying labels will generate not an error alert", async function(){
+
+
+
+	initDomFromFiles(
+		`${__dirname}/bar.html`,
+		`${__dirname}/bar.js`
+	)
+
+
+
+
+	const user = userEvent.setup()
+
+	const spyOn = jest.spyOn(window, 'alert').mockImplementation( () => {});
+
+
+	let xInput = await domTesting.findAllByLabelText(document, "X");
+	let yInput = await domTesting.findAllByLabelText(document, "Y")
+
+
+
+	let xLabel = await domTesting.getByRole(document, "textbox", { name: "X label" });
+	let yLabel = await domTesting.getByRole(document, "textbox", { name: "Y label" });
+
+	await user.type(xLabel, "hello")
+	await user.type(yLabel, "is there anybody out there?")
+
+	const generateButton = domTesting.getByRole(document, "button", {name: "Generate chart"})
+
+	await user.type(xInput[0], "1")
+	await user.type(yInput[0], "2")
+
+
+	await user.click(generateButton)
+
+
+	expect(spyOn).not.toHaveBeenCalled()
+
 
 
 
 })
+
+
+test("Pressing the clear button will remove all user-supplied data", async function(){
+
+
+
+
+	initDomFromFiles(
+		`${__dirname}/bar.html`,
+		`${__dirname}/bar.js`
+	)
+
+
+	const user = userEvent.setup()
+
+	const spyOn = jest.spyOn(window, 'alert').mockImplementation( () => {});
+
+	const defaultColor = "#ff4500"
+
+	const colorSelector = await domTesting.findByLabelText(document, "Chart color")
+
+	await user.click(colorSelector)
+
+	colorSelector.value = "#ff4599"
+
+	await fireEvent.change(colorSelector);
+
+	//Making sure the value of color has changed
+	expect(colorSelector.value).not.toBe(defaultColor)
+	expect(colorSelector.value).toBe("#ff4599")
+
+
+
+	let xInput = await domTesting.findAllByLabelText(document, "X");
+	let yInput = await domTesting.findAllByLabelText(document, "Y");
+
+	const chartTitle = await domTesting.findByLabelText(document, "Chart title")
+
+
+	let xLabel = await domTesting.findByRole(document, "textbox", { name: "X label" });
+	let yLabel = await domTesting.findByRole(document, "textbox", { name: "Y label" });
+
+	while(xLabel.value.length > 0){
+		await user.type(xLabel, '{backspace}')
+	}
+
+	while(yLabel.value.length > 0){
+		await user.type(yLabel, '{backspace}')
+	}
+
+	await user.type(xLabel, "hello")
+	await user.type(yLabel, "is there anybody out there?")
+
+	await user.type(chartTitle, "Awesome chart")
+
+	expect(xLabel.value).toBe("hello")
+	expect(yLabel.value).toBe("is there anybody out there?")
+
+	expect(chartTitle.value).toBe("Awesome chart")
+
+	const generateButton = domTesting.getByRole(document, "button", {name: "Generate chart"})
+
+	await user.type(xInput[0], "1")
+	await user.type(yInput[0], "2")
+
+
+	await user.click(generateButton)
+
+	const clearButton = domTesting.getByRole(document, "button", {name: "Clear chart data"})
+
+	await user.click(clearButton)
+
+	//Color should be the original color now
+
+	expect(colorSelector.value).toBe(defaultColor)
+
+	expect(xLabel.value).toBe("")
+	expect(yLabel.value).toBe("")
+
+	//Finding all x and y inputs again
+	xInput = await domTesting.findAllByLabelText(document, "X");
+	yInput = await domTesting.findAllByLabelText(document, "Y")
+
+	for(let i = 0; i < xInput.length; i++){
+		expect(xInput[i].value).toBe("")
+		expect(yInput[i].value).toBe("")
+	}
+
+	expect(xInput.length).toBe(1)
+	expect(yInput.length).toBe(1)
+
+	expect(chartTitle.value).toBe("")
+
+})
+
+test("Pressing the clear button will remove all user-supplied data, even if the user has supplied multiple rows of data", async function(){
+
+
+
+
+	initDomFromFiles(
+		`${__dirname}/bar.html`,
+		`${__dirname}/bar.js`
+	)
+
+
+	const user = userEvent.setup()
+
+	const spyOn = jest.spyOn(window, 'alert').mockImplementation( () => {});
+
+	const defaultColor = "#ff4500"
+
+	const colorSelector = await domTesting.findByLabelText(document, "Chart color")
+
+	const addValuesButton = document.getElementById("add-values-btn")
+
+
+	await user.click(colorSelector)
+
+	colorSelector.value = "#ff4599"
+
+	await fireEvent.change(colorSelector);
+
+	//Making sure the value of color has changed
+	expect(colorSelector.value).not.toBe(defaultColor)
+	expect(colorSelector.value).toBe("#ff4599")
+
+
+
+	let xInput = await domTesting.findAllByLabelText(document, "X");
+	let yInput = await domTesting.findAllByLabelText(document, "Y");
+
+	const chartTitle = await domTesting.findByLabelText(document, "Chart title")
+
+
+	let xLabel = await domTesting.findByRole(document, "textbox", { name: "X label" });
+	let yLabel = await domTesting.findByRole(document, "textbox", { name: "Y label" });
+
+	while(xLabel.value.length > 0){
+		await user.type(xLabel, '{backspace}')
+	}
+
+	while(yLabel.value.length > 0){
+		await user.type(yLabel, '{backspace}')
+	}
+
+	await user.type(xLabel, "hello")
+	await user.type(yLabel, "is there anybody out there?")
+
+	await user.type(chartTitle, "Awesome chart")
+
+	expect(xLabel.value).toBe("hello")
+	expect(yLabel.value).toBe("is there anybody out there?")
+
+	expect(chartTitle.value).toBe("Awesome chart")
+
+	const generateButton = domTesting.getByRole(document, "button", {name: "Generate chart"})
+
+	for(let i = 0; i < 10; i++){
+		await user.click(addValuesButton)
+	}
+	xInput = await domTesting.findAllByLabelText(document, "X");
+	yInput = await domTesting.findAllByLabelText(document, "Y");
+
+	expect(xInput.length).toBe(11)
+	expect(yInput.length).toBe(11)
+
+	for(let i = 0; i < 11; i++){
+		await user.type(xInput[i], "420")
+		await user.type(yInput[i], "69")
+
+	}
+
+	//Asserting values were properly typed before clearing
+
+	for(let i = 0; i < 11; i++){
+		expect(xInput[i].value).toBe("420")
+		expect(yInput[i].value).toBe("69")
+	}
+
+
+	await user.click(generateButton)
+
+	const clearButton = domTesting.getByRole(document, "button", {name: "Clear chart data"})
+
+	await user.click(clearButton)
+
+	//Color should be the original color now
+
+	expect(colorSelector.value).toBe(defaultColor)
+
+	expect(xLabel.value).toBe("")
+	expect(yLabel.value).toBe("")
+
+	//Finding all x and y inputs again
+	xInput = await domTesting.findAllByLabelText(document, "X");
+	yInput = await domTesting.findAllByLabelText(document, "Y")
+
+	for(let i = 0; i < xInput.length; i++){
+		expect(xInput[i].value).toBe("")
+		expect(yInput[i].value).toBe("")
+	}
+
+	expect(xInput.length).toBe(1)
+	expect(yInput.length).toBe(1)
+
+	expect(chartTitle.value).toBe("")
+
+})
+
+
 
 
 
