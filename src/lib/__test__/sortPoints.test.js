@@ -27,5 +27,11 @@ describe('sortPoints handles valid cases', () => {
     expect(sortedPoints).toEqual([{x: -14, y: 6}, {x: -2, y: 22}, {x: 0, y: 1}, {x: 4, y: 58}]);
   });
 
+  test('sortPoints correctly handles objects with flip flopped values ((y,x)[{12, 14}, {4, 7}, {18, 2}] --> (x,y)[{2, 18}, {7, 4}, {14, 12}])', () => {
+    const points = [{y: 12, x: 14}, {y:4, x: 7}, {y: 18, x: 2}];
+    const sortedPoints = sortPoints(points)
+    expect(sortedPoints).toEqual([{x: 2, y: 18}, {x: 7,  y: 4}, {x: 14, y: 12}]);
+  });
+
 });
 
