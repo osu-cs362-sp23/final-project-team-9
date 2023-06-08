@@ -13,7 +13,10 @@ const { screen, fireEvent} = require('@testing-library/dom');
 
 const {getByTestId} = require('@testing-library/dom')
 
-let currentChartData;
+const genImg = require("../lib/generateChartImg")
+
+
+
 
 
 //Src : https://github.com/jestjs/jest/issues/1224
@@ -45,6 +48,7 @@ beforeEach( () => {
 require("whatwg-fetch")
 
 const fs = require("fs")
+const gen = require("../chartBuilder/chartBuilder");
 
 function initDomFromFiles(htmlPath, jsPath) {
     const html = fs.readFileSync(htmlPath, 'utf8')
@@ -331,7 +335,7 @@ test("Pressing the clear button will remove all user-supplied data", async funct
 
 	colorSelector.value = "#ff4599"
 
-	await fireEvent.change(colorSelector);
+	fireEvent.change(colorSelector);
 
 	//Making sure the value of color has changed
 	expect(colorSelector.value).not.toBe(defaultColor)
@@ -516,7 +520,67 @@ test("Pressing the clear button will remove all user-supplied data, even if the 
 
 })
 
+jest.mock("../lib/generateChartImg", function () {
+	return jest.fn().mockResolvedValue({ imgUrl: "https://google.com/pigeon.png" });
+});
 
 
+test("Data is being correctly sent to generateImage", async function() {
+
+
+	initDomFromFiles(
+		`${__dirname}/bar.html`,
+		`${__dirname}/bar.js`
+	)
+
+
+
+	const user = userEvent.setup()
+
+
+	let xInput = await domTesting.findAllByLabelText(document, "X");
+	let yInput = await domTesting.findAllByLabelText(document, "Y");
+
+	let xLabel = await domTesting.findByRole(document, "textbox", { name: "X label" });
+	let yLabel = await domTesting.findByRole(document, "textbox", { name: "Y label" });
+	const chartTitle = await domTesting.findByLabelText(document, "Chart title")
+
+	const colorSelector = await domTesting.findByLabelText(document, "Chart color")
+
+
+
+	await user.type(xInput[0], "1")
+	await user.type(yInput[0], "2")
+	await user.type(xLabel, "go")
+	await user.type(yLabel, "fish")
+	await user.type(chartTitle, "Awesome chart")
+
+
+	const generateButton = await domTesting.findByRole(document, "button", {name: "Generate chart"})
+
+	const generateChartImg = require("../lib/generateChartImg");
+
+	await user.click(colorSelector)
+
+	colorSelector.value = "#ff9909"
+
+	await fireEvent.change(colorSelector);
+
+
+
+
+	await user.click(generateButton)
+
+
+	expect(generateChartImg).toHaveBeenCalledWith("bar", [{"x": `${xInput[0].value}`, "y": `${yInput[0].value}`}],
+		xLabel.value, yLabel.value, chartTitle.value, colorSelector.value)
+
+	console.log("hey")
+
+
+
+
+
+})
 
 
