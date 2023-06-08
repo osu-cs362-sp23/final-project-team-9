@@ -18,7 +18,8 @@
     "style-loader": "^3.3.3",
     "webpack": "^5.83.1",
     "webpack-cli": "^5.1.1",
-    "webpack-dev-server": "^4.15.0"
+    "webpack-dev-server": "^4.15.0",
+    "whatwg-fetch": "^3.6.2"
   },
   "jest": {
     "moduleNameMapper": {
@@ -26,6 +27,7 @@
     }
   },
   "dependencies": {
-    "jest": "^29.5.0"
+    "jest": "^29.5.0",
+    "node-fetch": "^3.3.1"
   }
 }

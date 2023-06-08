@@ -26,20 +26,20 @@
                             Chart color
                             <input type="color" id="chart-color-input" value="#ff4500">
                         </label>
-                        <button id="generate-chart-btn">Generate chart</button>
+                        <button id="generate-chart-btn" data-testid="generate-chart-btn">Generate chart</button>
                         <button class="secondary" id="clear-chart-btn">Clear chart data</button>
                         <button class="secondary" id="save-chart-btn">Save chart</button>
                     </div>
                     <div class="content">
                         <div class="data-entry">
-                            <div id="x-y-data-grid">
+                            <div id="x-y-data-grid" data-testid="xyvalues">
                                 <label class="x-label">
                                     X label
                                     <input id="x-label-input" />
                                 </label>
                                 <label class="y-label">
                                     Y label
-                                    <input id="y-label-input" />
+                                    <input id="y-label-input" data-testid="y-label-input"/>
                                 </label>
                                 <h4 class="values-header">Values</h4>
                             </div>
