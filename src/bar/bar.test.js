@@ -19,13 +19,7 @@ const { fireEvent} = require('@testing-library/dom');
 //This gets rid of all data from run to run on the tests
 
 beforeEach( () => {
-	const rootElm = document.documentElement;
-
-// Remove attributes on root element
-	[...rootElm.attributes].forEach(attr => rootElm.removeAttribute(attr.name));
-
- // Remove all attributes
-
+	window.localStorage.clear()
 	jest.restoreAllMocks()
 	jest.clearAllMocks()
 });
@@ -90,10 +84,6 @@ test("Clicking the add values button adds a new pair of input fields should not 
 	let xInputElements = await domTesting.findAllByLabelText(document, "X")
 	let yInputElements = await domTesting.findAllByLabelText(document, "Y")
 
-	const clearBtn = domTesting.getByRole(document, "button", {name: "Clear chart data"})
-
-
-
 
 	await user.type(xInputElements[0], "69")
 	await user.type(yInputElements[0], "420")
@@ -115,7 +105,6 @@ test("Clicking the add values button adds a new pair of input fields should not 
 	expect(yInputElements[0].value).toBe("420")
 
 
-	await user.click(clearBtn)
 })
 
 test("Clicking the add values button four times should have 5 total input rows", async function(){
@@ -181,7 +170,6 @@ test("Trying to generate a chart without supplying any data, but supplying label
 	const generateButton = domTesting.getByText(document, "Generate chart")
 
 	const spyOn = jest.spyOn(window, 'alert').mockImplementation( () => {});
-	const clearBtn = domTesting.getByRole(document, "button", {name: "Clear chart data"})
 
 
 	await user.type(xLabel, "Pink")
@@ -193,7 +181,6 @@ test("Trying to generate a chart without supplying any data, but supplying label
 
 
 
-	await user.click(clearBtn)
 
 
 
