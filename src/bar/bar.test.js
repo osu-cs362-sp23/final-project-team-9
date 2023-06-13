@@ -395,15 +395,6 @@ test("Pressing the clear button will remove all user-supplied data, even if the 
 
 
 
-
-	while(xLabel.value.length > 0){
-		await user.type(xLabel, '{backspace}')
-	}
-
-	while(yLabel.value.length > 0){
-		await user.type(yLabel, '{backspace}')
-	}
-
 	await user.type(xLabel, "hello")
 	await user.type(yLabel, "is there anybody out there?")
 
