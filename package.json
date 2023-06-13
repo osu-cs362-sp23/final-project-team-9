@@ -5,7 +5,7 @@
   "scripts": {
     "build": "webpack",
     "start": "webpack serve --open",
-    "test": "jest"
+    "test:integration": "jest ./src/bar/bar.test.js"
   },
   "devDependencies": {
     "@testing-library/dom": "^9.3.0",
