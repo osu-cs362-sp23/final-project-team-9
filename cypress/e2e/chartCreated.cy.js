@@ -1,0 +1,27 @@
+describe('Chart is correctly generated', () => {
+  it('passes', () => {
+    cy.visit('/')
+    cy.contains("Line").click()
+    cy.contains("Chart title").type("Test Chart")
+    cy.contains("X label").type("Cats")
+    cy.contains("Y label").type("Dogs")
+    cy.contains("+").click()
+    cy.contains("+").click()
+    cy.contains("+").click()
+    cy.contains("+").click()
+    cy.get('.y-value').eq(0).type("3")
+    cy.get('.x-value').eq(0).type("1")
+    cy.get('.x-value').eq(1).type("2")
+    cy.get('.y-value').eq(1).type("7")
+    cy.get('.x-value').eq(2).type("3")
+    cy.get('.y-value').eq(2).type("15")
+    cy.get('.x-value').eq(3).type("4")
+    cy.get('.y-value').eq(3).type("25")
+    cy.get('.x-value').eq(4).type("5")
+    cy.get('.y-value').eq(4).type("40")
+    cy.contains("Generate chart").click()
+    cy.get('#chart-img').should('be.visible')
+    
+  })
+})
+
