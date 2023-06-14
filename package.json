@@ -6,6 +6,7 @@
     "build": "webpack",
     "start": "webpack serve --open",
     "test:unittests": "jest ./src/lib/__test__/chartStorage.test.js ./src/lib/__test__/generateChartImg.test.js ./src/lib/__test__/sortPoints.test.js"
+    "test:integration": "jest ./src/bar/bar.test.js"
   },
   "devDependencies": {
     "@testing-library/dom": "^9.3.0",

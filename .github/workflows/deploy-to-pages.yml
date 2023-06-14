@@ -1,7 +1,7 @@
 name: Deploy to GH Pages
 on:
   push:
-    branches: [ integration-tests ]
+    branches: [ main ]
 jobs:
   build-and-test:
     uses: ./.github/workflows/build-and-test.yml
