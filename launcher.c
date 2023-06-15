@@ -1,23 +1,27 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <stdlib.h>
+
 
 int testRunner(void) {
     int choice;
 
+    char input[10];
     printf("Press 1 to run integration tests\n");
     printf("Press 2 to run e2e tests\n");
     printf("Press 3 to run unit test - generate chart image\n");
     printf("Press 4 to run unit test - Sort points\n");
     printf("Press 5 to run unit test - Chart storage\n");
-    printf("Press 0 to exit\n");
+    printf("Press 6 to exit\n");
 
     for (int i = 0; i < 5; i++) {
         printf("\n");
     }
 
     printf("Your selection: ");
-    scanf("%d", &choice);
+    scanf("%s", input);
+    choice = atoi(input);
 
     switch (choice) {
         case 1:
@@ -50,7 +54,7 @@ int testRunner(void) {
                 return 1;
             }
             break;
-        case 0:
+        case 6:
             return 0;
         default:
             printf("Incorrect input\n");
@@ -73,3 +77,4 @@ int main() {
 
     return 0;
 }
+
