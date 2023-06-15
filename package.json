@@ -8,7 +8,9 @@
     "start": "webpack serve --open",
     "test:e2e": "start-server-and-test start http://localhost:8080 cy:run",
     "test:integration": "jest ./src/bar/bar.test.js",
-    "test:unittests": "jest ./src/lib/__test__/chartStorage.test.js ./src/lib/__test__/generateChartImg.test.js ./src/lib/__test__/sortPoints.test.js"
+    "test:utChartStorage": "jest ./src/lib/__test__/chartStorage.test.js",
+    "test:utgenChartImg": "jest ./src/lib/__test__/generateChartImg.test.js",
+    "test:utSortPoints":  "jest ./src/lib/__test__/sortPoints.test.js"
   },
   "devDependencies": {
     "@testing-library/cypress": "^9.0.0",
