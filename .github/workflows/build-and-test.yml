@@ -18,7 +18,9 @@ jobs:
       - run: mkdir build
       - run: rm -rf build/*
       - run: cp -r dist/* build/
-      - run: npm run test:unittests -- --verbose
+      - run: npm run test:utChartStorage
+      - run: npm run test:utgenChartImg -- --verbose
+      - run: npm run test:utSortPoints
       - run: npm run test:integration
       - run: npm run test:e2e
       - uses: actions/upload-artifact@v3
